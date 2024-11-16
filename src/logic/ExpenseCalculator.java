@@ -3,7 +3,6 @@ package logic;
 import java.util.ArrayList;
 
 public class ExpenseCalculator {
-
     private double personalTotal;
     private double generalTotal;
 
@@ -11,7 +10,6 @@ public class ExpenseCalculator {
         this.personalTotal = 0.0;
         this.generalTotal = 0.0;
     }
-
 
     public void calculateTotals(ArrayList<Transaction> transactions) {
         for (Transaction transaction : transactions) {
@@ -24,7 +22,7 @@ public class ExpenseCalculator {
             } else if ("General".equalsIgnoreCase(transaction.getType())) {
                 generalTotal += transaction.getAmount();
             } else if ("Split".equalsIgnoreCase(transaction.getType())) {
-                generalTotal += transaction.getAmount();
+                generalTotal += (transaction.getAmount() - transaction.getSplitAmount());
                 personalTotal += transaction.getSplitAmount();
             }
         }

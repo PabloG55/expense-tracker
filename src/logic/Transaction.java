@@ -20,6 +20,16 @@ public class Transaction {
         this.splitAmount = amount;
     }
 
+    public Transaction(Transaction other) {
+        this.date = other.date;
+        this.postedDate = other.postedDate;
+        this.description = other.description;
+        this.amount = other.amount;
+        this.category = other.category;
+        this.type = other.type;
+        this.splitAmount = other.splitAmount;
+    }
+
     // toString method
     @Override
     public String toString() {

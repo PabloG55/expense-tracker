@@ -4,8 +4,12 @@ import java.util.Scanner;
 
 public class TransactionCategorizer {
     private final Scanner scanner = new Scanner(System.in);
+    private final UndoRedoManager undoRedoManager = new UndoRedoManager();
 
     public void categorize(Transaction transaction) {
+        // Save the current state for undo
+        undoRedoManager.saveState(transaction);
+
         System.out.println(transaction);
         System.out.print("Is this a personal or general expense?\nOr split?\n(Enter 'p', 'g', or 's'): ");
         String type = scanner.nextLine();
@@ -25,13 +29,25 @@ public class TransactionCategorizer {
     }
 
     private void splitTransaction(Transaction transaction) {
-        System.out.print("(Enter the amount you want to split): ");
+        System.out.print("Enter the amount you want to split as personal expense: ");
         double splitAmount = scanner.nextDouble();
         scanner.nextLine(); // consume newline
 
-        double amount = transaction.getAmount() - splitAmount;
-        transaction.setAmount(amount);
-        transaction.setSplitAmount(splitAmount);
+        while (splitAmount <= 0 || splitAmount >= transaction.getAmount()) {
+            System.out.print("Invalid split amount. Please enter a value between 0 and " + transaction.getAmount() + ": ");
+            splitAmount = scanner.nextDouble();
+            scanner.nextLine(); // consume newline
+        }
+
         transaction.setType("Split");
+        transaction.setSplitAmount(splitAmount);
+    }
+
+    public Transaction undo() {
+        return undoRedoManager.undo();
+    }
+
+    public Transaction redo() {
+        return undoRedoManager.redo();
     }
 }

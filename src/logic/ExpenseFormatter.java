@@ -3,7 +3,6 @@ package logic;
 import java.util.ArrayList;
 
 public class ExpenseFormatter {
-
     private final StringBuilder personalExpenses;
     private final StringBuilder generalExpenses;
 
@@ -11,7 +10,6 @@ public class ExpenseFormatter {
         personalExpenses = new StringBuilder("Personal Expenses:\n");
         generalExpenses = new StringBuilder("General Expenses:\n");
     }
-
 
     public void formatExpenses(ArrayList<Transaction> transactions, ExpenseCalculator expenseCalculator) {
         for (Transaction transaction : transactions) {
@@ -23,13 +21,17 @@ public class ExpenseFormatter {
                 personalExpenses.append(transaction).append("\n");
             } else if ("General".equalsIgnoreCase(transaction.getType())) {
                 generalExpenses.append(transaction).append("\n");
-            } else {
-                generalExpenses.append(transaction).append("\n");
-                transaction.setAmount(transaction.getSplitAmount());
-                personalExpenses.append(transaction).append("\n");
+            } else if ("Split".equalsIgnoreCase(transaction.getType())) {
+                // Handle split transactions
+                Transaction generalPart = new Transaction(transaction);
+                generalPart.setAmount(transaction.getAmount() - transaction.getSplitAmount());
+                generalExpenses.append(generalPart).append("\n");
+
+                Transaction personalPart = new Transaction(transaction);
+                personalPart.setAmount(transaction.getSplitAmount());
+                personalExpenses.append(personalPart).append("\n");
             }
         }
-
 
         personalExpenses.append("\nTotal Personal Expenses: ").append(String.format("%.2f", expenseCalculator.getPersonalTotal())).append("\n");
         generalExpenses.append("\nTotal General Expenses: ").append(String.format("%.2f", expenseCalculator.getGeneralTotal())).append("\n");

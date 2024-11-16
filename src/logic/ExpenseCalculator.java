@@ -21,9 +21,9 @@ public class ExpenseCalculator {
                 personalTotal += transaction.getAmount();
             } else if ("General".equalsIgnoreCase(transaction.getType())) {
                 generalTotal += transaction.getAmount();
-            } else if ("Split".equalsIgnoreCase(transaction.getType())) {
-                generalTotal += (transaction.getAmount() - transaction.getSplitAmount());
-                personalTotal += transaction.getSplitAmount();
+            } else if (transaction instanceof SplitTransaction splitTransaction) {
+                generalTotal += splitTransaction.getGeneralAmount();
+                personalTotal += splitTransaction.getSplitAmount();
             }
         }
     }

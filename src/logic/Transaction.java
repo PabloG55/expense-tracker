@@ -1,25 +1,24 @@
 package logic;
 
 public class Transaction {
-    private final String date;
-    private final String postedDate;
-    private final String description;
-    private double amount;
-    private final String category;
-    private String type;
-    private double splitAmount;
+    protected final String date;
+    protected final String postedDate;
+    protected final String description;
+    protected double amount;
+    protected final String category;
+    protected String type;
 
     // Constructor
-    public Transaction(String date, String postedDate, String description, double amount, String category, String type, double splitAmount) {
+    public Transaction(String date, String postedDate, String description, double amount, String category, String type) {
         this.date = date;
         this.postedDate = postedDate;
         this.description = description;
         this.amount = amount;
         this.category = category;
         this.type = type;
-        this.splitAmount = amount;
     }
 
+    // Copy constructor
     public Transaction(Transaction other) {
         this.date = other.date;
         this.postedDate = other.postedDate;
@@ -27,7 +26,6 @@ public class Transaction {
         this.amount = other.amount;
         this.category = other.category;
         this.type = other.type;
-        this.splitAmount = other.splitAmount;
     }
 
     // toString method
@@ -37,29 +35,16 @@ public class Transaction {
                 date, postedDate, description, amount, category);
     }
 
-    // Setter for type
+    // Getter and setter methods
     public void setType(String type) {
         this.type = type;
     }
 
-    // Getter for type
     public String getType() {
         return type;
     }
 
-    public void setAmount(double amount) {
-        this.amount = amount;
-    }
     public double getAmount() {
         return amount;
     }
-
-    public void setSplitAmount(double splitAmount) {
-        this.splitAmount = splitAmount;
-    }
-
-    public double getSplitAmount() {
-        return splitAmount;
-    }
-
 }

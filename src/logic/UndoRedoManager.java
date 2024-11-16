@@ -7,7 +7,11 @@ public class UndoRedoManager {
     private final Stack<Transaction> redoStack = new Stack<>();
 
     public void saveState(Transaction transaction) {
-        undoStack.push(new Transaction(transaction));
+        if (transaction instanceof SplitTransaction) {
+            undoStack.push(new SplitTransaction((SplitTransaction) transaction));
+        } else {
+            undoStack.push(new Transaction(transaction));
+        }
         redoStack.clear();
     }
 
@@ -18,23 +22,14 @@ public class UndoRedoManager {
         }
 
         Transaction lastTransaction = undoStack.pop();
-        redoStack.push(new Transaction(lastTransaction));
-
-        if (lastTransaction.getType() == null) {
-            System.out.println("Reached original state. Nothing more to undo.");
-            return lastTransaction;
-        }
-
-        if ("Split".equals(lastTransaction.getType())) {
-            Transaction originalTransaction = new Transaction(lastTransaction);
-            originalTransaction.setType(null);
-            originalTransaction.setSplitAmount(0);
-            System.out.println("Undo completed (Split transaction).");
-            return originalTransaction;
+        if (lastTransaction instanceof SplitTransaction) {
+            redoStack.push(new SplitTransaction((SplitTransaction) lastTransaction));
+        } else {
+            redoStack.push(new Transaction(lastTransaction));
         }
 
         System.out.println("Undo completed.");
-        return new Transaction(lastTransaction);
+        return lastTransaction;
     }
 
     public Transaction redo() {
@@ -44,14 +39,13 @@ public class UndoRedoManager {
         }
 
         Transaction nextTransaction = redoStack.pop();
-        undoStack.push(new Transaction(nextTransaction));
-
-        if (nextTransaction.getType() != null && nextTransaction.getType().equals("Split")) {
-            System.out.println("Redo completed (Split transaction).");
+        if (nextTransaction instanceof SplitTransaction) {
+            undoStack.push(new SplitTransaction((SplitTransaction) nextTransaction));
         } else {
-            System.out.println("Redo completed.");
+            undoStack.push(new Transaction(nextTransaction));
         }
 
-        return new Transaction(nextTransaction);
+        System.out.println("Redo completed.");
+        return nextTransaction;
     }
 }

@@ -31,7 +31,8 @@ public class ExpenseTrackerApp {
                 continue;
             }
 
-            categorizer.categorize(transaction);
+            transaction = categorizer.categorize(transaction);
+            transactions.set(i, transaction);
 
             // Allow undo and redo actions during categorization
             while (true) {
@@ -42,10 +43,8 @@ public class ExpenseTrackerApp {
                     Transaction undoneTransaction = categorizer.undo();
                     if (undoneTransaction != null) {
                         transactions.set(i, undoneTransaction);
-                        if (undoneTransaction.getType() == null) {
-                            i--;
-                            break;
-                        }
+                        i--; // Go back one step to re-categorize the undone transaction
+                        break;
                     }
                 } else if (choice.equalsIgnoreCase("r")) {
                     Transaction redoneTransaction = categorizer.redo();
@@ -74,16 +73,11 @@ public class ExpenseTrackerApp {
         expenseFormatter.formatExpenses(transactions, expenseCalculator);
 
         // Export the formatted expenses using FileExporter
-        FileExporter fileExporter = new FileExporter();
-        fileExporter.exportExpensesToFile("Expenses.txt", expenseFormatter.getGeneralExpenses(), expenseFormatter.getPersonalExpenses());
+        new FileExporter("Expenses.txt", expenseFormatter.getGeneralExpenses(), expenseFormatter.getPersonalExpenses());
 
         System.out.println("Expenses exported to Expenses.txt");
     }
 
-    private void writeToFile(String fileName, String content, String content2) {
-        FileExporter fileExporter = new FileExporter();
-        fileExporter.exportExpensesToFile(fileName, content, content2);
-    }
 
     public void run() {
         loadTransactionsFromFile("C:\\Users\\pgarc\\OneDrive\\Documents\\UNCC\\2 semester\\Dsgn Sys\\expense-tracker\\src\\logic\\file.txt");

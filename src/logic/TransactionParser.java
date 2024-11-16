@@ -25,7 +25,7 @@ public class TransactionParser {
                 double amount = Double.parseDouble(matcher.group(4));
                 String category = matcher.group(5);
 
-                Transaction transaction = new Transaction(date, postedDate, description, amount, category, null, 0);
+                Transaction transaction = new Transaction(date, postedDate, description, amount, category, null);
                 transactions.add(transaction);
             }
         }

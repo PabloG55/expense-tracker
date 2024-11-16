@@ -21,15 +21,15 @@ public class ExpenseFormatter {
                 personalExpenses.append(transaction).append("\n");
             } else if ("General".equalsIgnoreCase(transaction.getType())) {
                 generalExpenses.append(transaction).append("\n");
-            } else if ("Split".equalsIgnoreCase(transaction.getType())) {
-                // Handle split transactions
-                Transaction generalPart = new Transaction(transaction);
-                generalPart.setAmount(transaction.getAmount() - transaction.getSplitAmount());
-                generalExpenses.append(generalPart).append("\n");
+            } else if (transaction instanceof SplitTransaction splitTransaction) {
 
-                Transaction personalPart = new Transaction(transaction);
-                personalPart.setAmount(transaction.getSplitAmount());
-                personalExpenses.append(personalPart).append("\n");
+                generalExpenses.append(String.format("Date: %s, Posted: %s, Description: %s, Amount: %.2f, Category: %s (Split - General)\n",
+                        splitTransaction.date, splitTransaction.postedDate, splitTransaction.description,
+                        splitTransaction.getGeneralAmount(), splitTransaction.category));
+
+                personalExpenses.append(String.format("Date: %s, Posted: %s, Description: %s, Amount: %.2f, Category: %s (Split - Personal)\n",
+                        splitTransaction.date, splitTransaction.postedDate, splitTransaction.description,
+                        splitTransaction.getSplitAmount(), splitTransaction.category));
             }
         }
 

@@ -5,7 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public class FileExporter {
-    public void exportExpensesToFile(String fileName, String content, String content2) {
+    public FileExporter(String fileName, String content, String content2) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
             writer.write(content);
             writer.newLine();

@@ -6,7 +6,7 @@ public class TransactionCategorizer {
     private final Scanner scanner = new Scanner(System.in);
     private final UndoRedoManager undoRedoManager = new UndoRedoManager();
 
-    public void categorize(Transaction transaction) {
+    public Transaction categorize(Transaction transaction) {
         // Save the current state for undo
         undoRedoManager.saveState(transaction);
 
@@ -24,11 +24,13 @@ public class TransactionCategorizer {
         } else if (type.equalsIgnoreCase("g")) {
             transaction.setType("General");
         } else {
-            splitTransaction(transaction);
+            transaction = splitTransaction(transaction);
         }
+
+        return transaction;
     }
 
-    private void splitTransaction(Transaction transaction) {
+    private SplitTransaction splitTransaction(Transaction transaction) {
         System.out.print("Enter the amount you want to split as personal expense: ");
         double splitAmount = scanner.nextDouble();
         scanner.nextLine(); // consume newline
@@ -39,8 +41,8 @@ public class TransactionCategorizer {
             scanner.nextLine(); // consume newline
         }
 
-        transaction.setType("Split");
-        transaction.setSplitAmount(splitAmount);
+        return new SplitTransaction(transaction.date, transaction.postedDate, transaction.description,
+                transaction.getAmount(), transaction.category, splitAmount);
     }
 
     public Transaction undo() {
